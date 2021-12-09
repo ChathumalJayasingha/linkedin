@@ -18,9 +18,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { TextInput } from 'react-native-paper';
 
 
-const HomeTab = () => {
+const HomeTab = (props) => {
   const [allPosts, setAllPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -50,6 +51,8 @@ const HomeTab = () => {
       }}>
       <StatusBar backgroundColor={COLORS.white} barStyle={'dark-content'} />
 
+
+
       <View
         style={{
           flexDirection: 'row',
@@ -57,9 +60,41 @@ const HomeTab = () => {
           justifyContent: 'space-between',
           backgroundColor: COLORS.white,
           elevation: 4,
-          paddingHorizontal: 20,
+          paddingBottom:10,
+          //paddingHorizontal: 20,
         }}>
-        <Text style={{fontSize: 20, color: COLORS.black}}>Lined App</Text>
+       
+      <TouchableOpacity onPress={()=>{
+            props.navigation.navigate('MyProfileScreen');
+      }} >
+          
+      <Image
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                  marginLeft:20,
+                  marginRight:20
+                }}
+                source={require('../../assets/person.png')}
+              />
+          
+          </TouchableOpacity> 
+        
+     
+
+        <TextInput 
+        outlineColor={"gray"} 
+        activeOutlineColor={"gray"} 
+        mode={"outlined"}
+         style={{width:250,height:30,borderRadius:10}} 
+         label={ <FontAwesome name={"search"}  size={15} color={"gray"} />  }/>
+        <FontAwesome style={{
+            marginLeft:20,
+            marginRight:20
+          }}
+        name={"commenting"}  size={25} color={"black"} /> 
+{/* 
         <Text
           style={{
             fontSize: 20,
@@ -68,8 +103,10 @@ const HomeTab = () => {
           }}
           onPress={signOut}>
           Logout
-        </Text>
+        </Text> */}
       </View>
+
+
 
       <FlatList
         data={allPosts}
@@ -134,7 +171,7 @@ const HomeTab = () => {
                <Entypo name={"dots-three-vertical"} style={{marginTop:10}} size={20} color={"black"} /> 
             </TouchableOpacity>
            
-            <Text  style={{fontSize:15,margin:0,padding:0,color:'black'}}>{data.userTitle}</Text>
+            <Text  style={{fontSize:15,margin:10,padding:0,color:'black'}}>{data.description}</Text>
             
             <Image
               source={{uri: data.image}}

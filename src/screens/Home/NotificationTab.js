@@ -1,11 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, ScrollView, Image} from 'react-native';
+import {View, Text, ScrollView, Image, SafeAreaView, TouchableOpacity} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import {COLORS} from '../../constants/theme';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function NotificationTab() {
+import Entypo from 'react-native-vector-icons/Entypo';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { TextInput } from 'react-native-paper';
+
+
+
+export default function NotificationTab(props) {
   const [notification, setNotification] = useState({
-    title: undefined,
-    body: undefined,
+    title: 'No notification here !',
+    body: '',
     image: undefined,
   });
 
@@ -52,14 +61,80 @@ export default function NotificationTab() {
   }, []);
 
   return (
-    <View>
-      <Text>NotificationTab</Text>
-      <View>
-      <Text>Firebase Messaging</Text>
-      <Text>{`title: ${notification?.title}`}</Text>
-      <Text>{`title: ${notification?.body}`}</Text>
-      <Image source={{uri: notification?.image}} width={500} height={500} />
-    </View>
-    </View>
+
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: COLORS.background,
+        position: 'relative',
+      }}>
+
+
+<View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          backgroundColor: COLORS.white,
+          elevation: 4,
+          paddingBottom:10,
+          //paddingHorizontal: 20,
+        }}>
+       
+      <TouchableOpacity onPress={()=>{
+            props.navigation.navigate('MyProfileScreen');
+      }} >
+          
+      <Image
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                  marginLeft:20,
+                  marginRight:20
+                }}
+                source={require('../../assets/person.png')}
+              />
+          
+          </TouchableOpacity> 
+        
+     
+
+        <TextInput 
+        outlineColor={"gray"} 
+        activeOutlineColor={"gray"} 
+        mode={"outlined"}
+         style={{width:250,height:30,borderRadius:10}} 
+         label={ <FontAwesome name={"search"}  size={15} color={"gray"} />  }/>
+        <FontAwesome style={{
+            marginLeft:20,
+            marginRight:20
+          }}
+        name={"commenting"}  size={25} color={"black"} /> 
+      </View>
+
+      <View
+        style={{
+            //borderWidth:1,
+           alignItems: 'center',
+        //   justifyContent: 'center',
+        borderRadius:10,
+          backgroundColor: COLORS.white,
+          elevation: 4,
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          marginHorizontal: 10,
+          marginVertical: 10,
+          }}>
+        <Text
+          style={{
+            fontSize: 20,
+            justifyContent: 'center',
+            color: COLORS.black,
+          }}>{` ${notification?.title}`}</Text>
+              <Text>{` ${notification?.body}`}</Text>
+              <Image source={{uri: notification?.image}} width={300} height={300} />
+          </View>
+    </SafeAreaView>
   );
 }

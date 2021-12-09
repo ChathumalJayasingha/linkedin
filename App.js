@@ -6,6 +6,7 @@ import AppStackNavigator from './src/navigators/AppStackNavigator';
 //import AppDrawerNavigator from './src/navigators/AppDrawerNavigator';
 import auth from '@react-native-firebase/auth';
 import 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const [notification, setNotification] = useState({
@@ -62,6 +63,14 @@ const App = () => {
   const onAuthStateChanged = async user => {
     await setCurrentUser(user);
     setIsLoading(false);
+
+    try {
+      const jsonValue = JSON.stringify(user);
+      console.log(JSON.stringify(user));
+      await AsyncStorage.setItem('user', jsonValue);
+    } catch (e) {
+      console.log("async save error");
+    }
   };
 
   useEffect(() => {
