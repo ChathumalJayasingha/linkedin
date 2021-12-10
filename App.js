@@ -69,7 +69,14 @@ const App = () => {
       console.log(JSON.stringify(user));
       await AsyncStorage.setItem('user', jsonValue);
     } catch (e) {
-      console.log("async save error");
+      console.log('async save error');
+    }
+
+    try {
+      await AsyncStorage.setItem('email', user.email);
+      console.info(await AsyncStorage.setItem('email', user.email));
+    } catch (e) {
+      console.log('set email error in sign up screen');
     }
   };
 

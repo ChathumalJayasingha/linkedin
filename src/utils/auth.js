@@ -1,6 +1,7 @@
 import auth from '@react-native-firebase/auth';
 import {ToastAndroid} from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const signIn = (email, password) => {
   auth()
@@ -76,6 +77,9 @@ export const signUp = (email, password) => {
 };
 
 export const signOut = () => {
+
+    removeValue();
+
   auth()
     .signOut()
     .then(() => {
@@ -95,3 +99,13 @@ export async function googleSignInButton() {
   return auth().signInWithCredential(googleCredential);
 }
 //};
+const removeValue = async () => {
+  try {
+    await AsyncStorage.removeItem('fname');
+    await AsyncStorage.removeItem('email');
+    await AsyncStorage.removeItem('lname');
+    await AsyncStorage.removeItem('position');
+  } catch(e) {
+    console.log(" remove error");
+  }
+}

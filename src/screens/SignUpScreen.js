@@ -9,11 +9,44 @@ import {
 } from 'react-native';
 import {TextInput, Checkbox, Button} from 'react-native-paper';
 import {signUp, googleSignInButton} from '../utils/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
 
 export default function RegisterScreen(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userName, setUserName] = useState('');
+
+  const saveEmail = async () => {
+    try {
+      await AsyncStorage.setItem('email', email);
+    } catch (e) {
+      console.log('set email error in sign up screen');
+    }
+  };
+
+  const getEmailInAsync = async () => {
+    try {
+      const value = await AsyncStorage.getItem('email');
+      if (value !== null) {
+        setEmail(value);
+        alert('email find ' + value);
+      }
+    } catch (e) {
+      console.log('email set error in myprofilescreen');
+    }
+  };
+
+  const googleSave = async () => {
+    await googleSignInButton();
+    await getEmailInAsync();
+    await props.navigation.navigate('MyProfileScreen');
+  };
+
+  const saveInButton = async () => {
+   await signUp(email, password);
+   await saveEmail();
+   await props.navigation.navigate('MyProfileScreen');
+  };
 
   return (
     <ScrollView style={styles.main_wrap}>
@@ -58,7 +91,7 @@ export default function RegisterScreen(props) {
           color={'#0A66C2'}
           onPress={() => {
             // props.navigation.navigate('home');
-            signUp(email, password);
+                saveInButton();
           }}>
           Continue
         </Button>
@@ -78,7 +111,10 @@ export default function RegisterScreen(props) {
           mode="outlined"
           color={'gray'}
           onPress={() => {
-            googleSignInButton();
+            // googleSignInButton();
+            // getEmailInAsync();
+            // props.navigation.navigate('MyProfileScreen');
+            googleSave();
           }}>
           Sign in with Google
         </Button>

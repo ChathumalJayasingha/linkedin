@@ -85,11 +85,24 @@ import {
 import {TextInput, Checkbox, Button} from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
 import {signIn, googleSignInButton} from '../utils/auth';
+import {getUserById} from '../utils/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignInScreen(props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userName, setUserName] = useState('');
+
+  const getUserDetails = async () => {
+    let userData = await (await getUserById(email)).data();
+    console.warn(JSON.stringify(userData.fname));
+    try {
+      await AsyncStorage.setItem('fname', JSON.stringify(userData.fname));
+      await AsyncStorage.setItem('lname', JSON.stringify(userData.lname));
+      await AsyncStorage.setItem('position', JSON.stringify(userData.position));
+    } catch (e) {
+      console.log('set email error in sign in scrreen');
+    }
+  };
 
   return (
     <ScrollView style={styles.main_wrap}>
@@ -145,7 +158,7 @@ export default function SignInScreen(props) {
           uppercase={false}
           mode="contained"
           color={'#0A66C2'}
-          onPress={() => {
+          onPress={async () => {
             if (email === '') {
               ToastAndroid.show(
                 'Please enter your email !!!',
@@ -160,7 +173,8 @@ export default function SignInScreen(props) {
               );
               return;
             }
-            signIn(email, password);
+            await signIn(email, password);
+            await getUserDetails();
           }}>
           Continue
         </Button>
@@ -179,7 +193,7 @@ export default function SignInScreen(props) {
           icon={require('../assets/Google_icon.png')}
           mode="outlined"
           color={'gray'}
-          onPress={() => {
+          onPress={async () => {
             googleSignInButton();
           }}>
           Sign in with Google

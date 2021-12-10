@@ -56,3 +56,20 @@ export const getPostById = postId => {
 export const getAllPosts = () => {
   return firestore().collection('Posts').get();
 };
+
+export const createUser = (email, fname, lname, position, education) => {
+  return firestore().collection('user').doc(email).set({
+    fname,
+    lname,
+    position,
+    education,
+  });
+};
+
+export const getAllUsers = () => {
+  return firestore().collection('user').get();
+};
+
+export const getUserById = userId => {
+  return firestore().collection('user').doc(userId).get();
+};

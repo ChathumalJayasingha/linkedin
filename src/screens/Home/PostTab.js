@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {View, Text, ToastAndroid, SafeAreaView, StyleSheet} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import {signOut} from '../../utils/auth';
@@ -10,14 +10,33 @@ import storage from '@react-native-firebase/storage';
 import ImagePicker from 'react-native-image-crop-picker';
 import {createQuestion} from '../utils/database';
 import {launchImageLibrary} from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PostTab = ({navigation}) => {
-  const [username, setUsername] = useState('udara');
-  const [usernameDesc, setUsernameDesc] = useState('Marine officer');
-  const [postDesc, setPostDesc] = useState(
-    'This is Docker lorelm lorem lorem lorel',
-  );
+  const [username, setUsername] = useState('');
+  const [usernameDesc, setUsernameDesc] = useState('');
+  const [postDesc, setPostDesc] = useState('');
   const [imageUri, setImageUri] = useState('');
+
+  useEffect(()=>{
+    getUserDetailsInAsync()
+  },[])
+
+  const getUserDetailsInAsync = async () => {
+    try {
+      const getuserFname = await AsyncStorage.getItem('fname');
+      const getuserLname = await AsyncStorage.getItem('lname');
+      const getposition = await AsyncStorage.getItem('position');
+      if (getuserFname !== null) {
+        setUsername(getuserFname+" "+getuserLname);
+      }
+      if (getposition !== null) {
+        setUsernameDesc(getposition);
+      }
+    } catch (e) {
+      console.log('email set error in myprofilescreen');
+    }
+  };
 
   const handleQuizSave = async () => {
     const currentQuizId = Math.floor(100000 + Math.random() * 9000).toString();
@@ -61,7 +80,7 @@ const PostTab = ({navigation}) => {
   return (
     <SafeAreaView style={styles.main_wrap}>
       <View style={styles.header}>
-        <Text style={styles.header_text}>Quiz App</Text>
+        <Text style={styles.header_text}>Linked App</Text>
         <Text style={styles.header_logout} onPress={signOut}>
           Logout
         </Text>
@@ -70,10 +89,14 @@ const PostTab = ({navigation}) => {
 
       <TextInput
         label={'username'}
+        disabled={true}
+        value={username}
         onChangeText={value => setUsername(value)}
       />
       <TextInput
         label={'User Description'}
+        disabled={true}
+        value={usernameDesc}
         onChangeText={value => setUsernameDesc(value)}
       />
       <TextInput
