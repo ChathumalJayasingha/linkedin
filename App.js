@@ -17,7 +17,7 @@ const App = () => {
 
   const getToken = async () => {
     const token = await messaging().getToken();
-    console.log('.........................: ', token);
+  //  console.log('.........................: ', token);
   };
 
   useEffect(() => {
@@ -68,15 +68,9 @@ const App = () => {
       const jsonValue = JSON.stringify(user);
       console.log(JSON.stringify(user));
       await AsyncStorage.setItem('user', jsonValue);
-    } catch (e) {
-      console.log('async save error');
-    }
-
-    try {
       await AsyncStorage.setItem('email', user.email);
-      console.info(await AsyncStorage.setItem('email', user.email));
     } catch (e) {
-      console.log('set email error in sign up screen');
+      console.log('user and email save error app.js ');
     }
   };
 

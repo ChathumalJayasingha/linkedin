@@ -26,10 +26,13 @@ export default function RegisterScreen(props) {
 
   const getEmailInAsync = async () => {
     try {
-      const value = await AsyncStorage.getItem('email');
+      const value = await AsyncStorage.getItem('email_google');
+      
       if (value !== null) {
         setEmail(value);
-        alert('email find ' + value);
+        alert('email find in async ' + value);
+      }else{
+        alert("Null In Email")
       }
     } catch (e) {
       console.log('email set error in myprofilescreen');
@@ -37,15 +40,21 @@ export default function RegisterScreen(props) {
   };
 
   const googleSave = async () => {
-    await googleSignInButton();
-    await getEmailInAsync();
-    await props.navigation.navigate('MyProfileScreen');
+      setTimeout(async()=>{
+        await googleSignInButton();
+        //await getEmailInAsync();
+        await props.navigation.navigate('MyProfileScreen');
+      },1000)
+   
   };
 
   const saveInButton = async () => {
-   await signUp(email, password);
-   await saveEmail();
-   await props.navigation.navigate('MyProfileScreen');
+      setTimeout(async()=>{
+        await signUp(email, password);
+        //await saveEmail();
+        await props.navigation.navigate('MyProfileScreen');
+      },1000)
+
   };
 
   return (

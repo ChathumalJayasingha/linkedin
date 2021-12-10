@@ -18,14 +18,19 @@ const MyProfileScreen = props => {
   const [education, setEducation] = useState('');
 
   const getEmailInAsync = async () => {
-    try {
-      const value = await AsyncStorage.getItem('email');
-      if (value !== null) {
-        setEmail(value);
+    setTimeout(async () => {
+      try {
+        const value = await AsyncStorage.getItem('email');
+        if (value !== null) {
+          setEmail(value);
+          console.log(email);
+        } else {
+          console.warn('No Found Email ');
+        }
+      } catch (e) {
+        console.log('email set error in myprofilescreen');
       }
-    } catch (e) {
-      console.log('email set error in myprofilescreen');
-    }
+    }, 2000);
   };
 
   useEffect(() => {
@@ -51,7 +56,7 @@ const MyProfileScreen = props => {
       await AsyncStorage.setItem('position', currentPosition);
       await AsyncStorage.setItem('education', education);
     } catch (e) {
-      console.info("Async save error my profile 54");
+      console.info('Async save error my profile 54');
     }
   };
 

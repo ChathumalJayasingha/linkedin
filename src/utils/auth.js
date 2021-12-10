@@ -103,6 +103,8 @@ const removeValue = async () => {
   try {
     await AsyncStorage.removeItem('fname');
     await AsyncStorage.removeItem('email');
+    await AsyncStorage.removeItem('email_google');
+    await AsyncStorage.removeItem('email');
     await AsyncStorage.removeItem('lname');
     await AsyncStorage.removeItem('position');
   } catch(e) {

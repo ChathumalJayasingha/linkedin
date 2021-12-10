@@ -1,6 +1,6 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, ToastAndroid, SafeAreaView, StyleSheet} from 'react-native';
-import {Button, TextInput} from 'react-native-paper';
+import {Button, TextInput, ActivityIndicator} from 'react-native-paper';
 import {signOut} from '../../utils/auth';
 import {createPost} from '../../utils/database';
 import FormInput from '../../components/shared/FormInput';
@@ -12,33 +12,41 @@ import {createQuestion} from '../utils/database';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const PostTab = ({navigation}) => {
+const PostTab = ({navigation, props}) => {
   const [username, setUsername] = useState('');
   const [usernameDesc, setUsernameDesc] = useState('');
   const [postDesc, setPostDesc] = useState('');
   const [imageUri, setImageUri] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    getUserDetailsInAsync()
-  },[])
+  useEffect(() => {
+    getUserDetailsInAsync();
+    if (username == null) {
+      navigation.navigate('MyProfileScreen');
+    }
+  }, []);
 
   const getUserDetailsInAsync = async () => {
-    try {
-      const getuserFname = await AsyncStorage.getItem('fname');
-      const getuserLname = await AsyncStorage.getItem('lname');
-      const getposition = await AsyncStorage.getItem('position');
-      if (getuserFname !== null) {
-        setUsername(getuserFname+" "+getuserLname);
+    setTimeout(async () => {
+      try {
+        const getuserFname = await AsyncStorage.getItem('fname');
+        const getuserLname = await AsyncStorage.getItem('lname');
+        const getposition = await AsyncStorage.getItem('position');
+        if (getuserFname !== null) {
+          setUsername(getuserFname + ' ' + getuserLname);
+        }
+        if (getposition !== null) {
+          setUsernameDesc(getposition);
+        }
+      } catch (e) {
+        console.log('email set error in myprofilescreen');
       }
-      if (getposition !== null) {
-        setUsernameDesc(getposition);
-      }
-    } catch (e) {
-      console.log('email set error in myprofilescreen');
-    }
+    }, 1000);
   };
 
-  const handleQuizSave = async () => {
+  const handleSave = async () => {
+    setLoading(true);
+    
     const currentQuizId = Math.floor(100000 + Math.random() * 9000).toString();
     let currentQuestionId = Math.floor(
       100000 + Math.random() * 9000,
@@ -61,6 +69,8 @@ const PostTab = ({navigation}) => {
     // Save to firestore
     await createPost(currentQuizId, username, usernameDesc, postDesc, imageUrl);
     ToastAndroid.show('Post Saved', ToastAndroid.SHORT);
+    setPostDesc('');
+    setLoading(false);
   };
 
   const selectImage = () => {
@@ -87,6 +97,12 @@ const PostTab = ({navigation}) => {
       </View>
       <Text style={styles.create_post_text}>Create Post</Text>
 
+      <ActivityIndicator
+        animating={loading}
+        color={'gray'}
+        hidesWhenStopped={true}
+        size={'large'}
+      />
       <TextInput
         label={'username'}
         disabled={true}
@@ -101,11 +117,12 @@ const PostTab = ({navigation}) => {
       />
       <TextInput
         label={'About Post '}
+        value={postDesc}
         onChangeText={value => setPostDesc(value)}
       />
 
       <Button onPress={selectImage}>Select Image</Button>
-      <Button onPress={handleQuizSave}>Create Post</Button>
+      <Button onPress={handleSave}>Create Post</Button>
     </SafeAreaView>
   );
 };
